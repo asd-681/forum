@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# BASE_DIR в settings.py содержит в себе абсолютный путь до корня проекта.
+#__file__ – это путь к файлу, из которого был загружен модуль
+#Функция resolve() может использоваться для преобразования URL-путей к соответствующим функциям представления.
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'service.apps.ServiceConfig',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +58,9 @@ ROOT_URLCONF = 'forum_prj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,11 +81,14 @@ WSGI_APPLICATION = 'forum_prj.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'forums',
+        'USER': 'postgres',
+        'PASSWORD':'Qazx4321',
+        'PORT':'5432',
+        'HOST':'localhost'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -115,9 +124,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/' 
+#URL-адрес для использования при обращении к статическим файлам, расположенным в STATIC_ROOT.
+
+STATIC_DIRS = [ 
+    os.path.join(BASE_DIR, 'static')
+],
+# STATIC_DIRS тут мы определяем список каталогов в вашем файле настроек, где Django также будет искать статические файлы.
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'root/static')
+# Путь к общей статической папке используемой реальным веб-сервером
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#С помощью DEFAULT_AUTO_FIELD автоматически добавляются Primary Key в модели 
+#BigAutoFiel - это 64-разрядное целое число, очень похожее на AutoField, за исключением того, что оно гарантированно соответствует числам от 1 до 9223372036854775807
+MEDIA_URL = '/media/'
+# MEDIA_URL здесь мы указываем по какому префиксу url будут искаться при запросе от клиента IMAGE
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT тут указываем что файлы будут храниться в папке media в корне проекта(BASE_DIR)
