@@ -1,9 +1,8 @@
 {% extends "index.html" %}
-{% load crispy_forms_tags %}
 
 {% block content %}
-    <h1>Logout Page</h1>
-    <p>dD you wanna log out?</p>
+    <h1>You are logged out</h1>
+    <h4>Do u wanna log in?</h4>
     <br>
-    <a class="btn btn-primary" href="{% url 'logout' %}"></a>
+    <a class="btn btn-primary" href="{% url 'login' %}">Log in again</a>
 {% endblock %}
