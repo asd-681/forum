@@ -1,7 +1,11 @@
+from sre_constants import CALL
+from tkinter import CASCADE
 from tokenize import blank_re
 from turtle import title
+from urllib import request
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -29,3 +33,25 @@ class Comment(models.Model):
     def get_absolute_url(self):
         return reverse("index")
 
+
+class Support(models.Model):
+
+    APPLICATION_STATUS_CHOICES = [
+    ('ОК', 'Обрабатывается'),
+    ('ПР', 'Принято'),
+    ('ОТ', 'Отказ'),
+    ]
+
+    TYPE_QUESTION_CHOICES = [
+        ("RN","Возврат"),
+        ("WC","Гарантийный случай"),
+        ("EX","Обмен"),
+        ("RP","Ремонт"),
+    ]
+    header = models.CharField(verbose_name='Заголовок', max_length=100)
+    question = models.TextField(verbose_name='Описание вопроса', null=True, blank = True)
+    type_question = models.CharField(max_length=2, choices=TYPE_QUESTION_CHOICES, default='ОК')
+    date_create = models.DateField()
+    application_status = models.CharField(max_length=2, choices= APPLICATION_STATUS_CHOICES, default='RN')
+    date_change_status = models.DateField(auto_now=True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null=True)

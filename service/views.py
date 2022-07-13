@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from service.models import Post, Comment
+from service.models import Post, Comment, Support
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView, DetailView #Импортировали контроллеры Классы
-from .forms import PostForm, CommentForm, UserRegisterForm
+from .forms import PostForm, CommentForm, UserRegisterForm, SupportForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +14,6 @@ def index(req):
 @login_required
 def about(req):
     return render(req, 'about.html')
-
 
 class RegisterForm(CreateView):
     form_class = UserRegisterForm
@@ -54,3 +53,21 @@ class AddCommentView(LoginRequiredMixin, CreateView):
         form.instance.post_id = self.kwargs['pk']
         return super().form_valid(form)
     
+
+
+def core(req):
+    error = ''
+    if req.method == 'POST':
+        form = SupportForm(req.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('http://127.0.0.1:8000/')
+        else:
+            error = 'Неверная форма заполнения'
+
+    form = SupportForm()
+    data ={
+        'form': form,
+        'error': error
+    }
+    return render(req, 'support.html', data)
